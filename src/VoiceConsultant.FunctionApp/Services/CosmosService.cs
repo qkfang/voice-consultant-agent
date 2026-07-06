@@ -21,7 +21,20 @@ public class CosmosService
         {
             credentialOptions.TenantId = _options.TenantId;
         }
-        _client = new Lazy<CosmosClient>(() => new CosmosClient(_options.AccountEndpoint, new DefaultAzureCredential(credentialOptions)));
+
+        // Locally there is no IMDS endpoint, so skip Managed Identity to avoid an
+        // unrecoverable auth failure that would otherwise stop the credential chain.
+        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("WEBSITE_INSTANCE_ID")))
+        {
+            credentialOptions.ExcludeManagedIdentityCredential = true;
+        }
+
+        var clientOptions = new CosmosClientOptions
+        {
+            UseSystemTextJsonSerializerWithOptions = new System.Text.Json.JsonSerializerOptions()
+        };
+
+        _client = new Lazy<CosmosClient>(() => new CosmosClient(_options.AccountEndpoint, new DefaultAzureCredential(credentialOptions), clientOptions));
     }
 
     private Container ConversationsContainer =>

@@ -30,6 +30,13 @@ public class FoundryAgentService
             credentialOptions.TenantId = foundryOptions.TenantId;
         }
 
+        // Locally there is no IMDS endpoint, so skip Managed Identity to avoid an
+        // unrecoverable auth failure that would otherwise stop the credential chain.
+        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("WEBSITE_INSTANCE_ID")))
+        {
+            credentialOptions.ExcludeManagedIdentityCredential = true;
+        }
+
         var projectClient = new AIProjectClient(new Uri(foundryOptions.ProjectEndpoint), new DefaultAzureCredential(credentialOptions));
 
         var tools = new List<ResponseTool>();
