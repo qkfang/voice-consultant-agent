@@ -1,0 +1,60 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Voice Consultant Calls";
+}
+
+<h1>Voice Consultant Calls</h1>
+<p>Call transcripts and Foundry agent feedback stored in Cosmos DB.</p>
+
+@if (Model.ErrorMessage is not null)
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+else if (Model.Calls.Count == 0)
+{
+    <p>No calls have been recorded yet.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Call Id</th>
+                <th>Consultant</th>
+                <th>Received</th>
+                <th>Hardship Detected</th>
+                <th>Issues</th>
+                <th>Suggestions</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var call in Model.Calls)
+            {
+                <tr>
+                    <td>@call.Conversation.CallId</td>
+                    <td>@call.Conversation.ConsultantId</td>
+                    <td>@call.Conversation.CreatedAt.ToLocalTime()</td>
+                    <td>
+                        @if (call.Insight is null)
+                        {
+                            <span>Pending</span>
+                        }
+                        else if (call.Insight.HardshipDetected)
+                        {
+                            <span class="badge bg-danger">Yes</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">No</span>
+                        }
+                    </td>
+                    <td>@string.Join(", ", call.Insight?.Issues ?? new())</td>
+                    <td>@string.Join(", ", call.Insight?.Suggestions ?? new())</td>
+                    <td>@call.Insight?.Summary</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

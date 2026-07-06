@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/VoiceConsultant.FunctionApp/VoiceConsultant.FunctionApp.csproj" />
+    <Project Path="src/VoiceConsultant.Web/VoiceConsultant.Web.csproj" />
+  </Folder>
+</Solution>
