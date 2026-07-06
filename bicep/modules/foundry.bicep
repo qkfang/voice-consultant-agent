@@ -12,6 +12,9 @@ param foundryProjectName string
 resource foundrySvc 'Microsoft.CognitiveServices/accounts@2025-10-01-preview' = {
   name: foundryServicesName
   location: location
+  tags: {
+    SecurityControl: 'Ignore'
+  }
   identity: {
     type: 'SystemAssigned'
   }
