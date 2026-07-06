@@ -157,6 +157,19 @@ resource principalCosmosDataContributorAssignments 'Microsoft.DocumentDB/databas
   }
 }]
 
+var readerRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+
+// Principals need control-plane read access to open the Cosmos DB Data Explorer in the portal
+resource principalCosmosReaderAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for principal in principals: {
+  scope: cosmosAccount
+  name: guid(cosmosAccount.id, principal.id, readerRoleId)
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', readerRoleId)
+    principalId: principal.id
+    principalType: principal.principalType
+  }
+}]
+
 resource foundryAccount 'Microsoft.CognitiveServices/accounts@2025-10-01-preview' existing = {
   name: aiServicesName
 }

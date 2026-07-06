@@ -12,6 +12,7 @@ public class CosmosOptions
 public class FoundryOptions
 {
     public string ProjectEndpoint { get; set; } = string.Empty;
+    public string TenantId { get; set; } = string.Empty;
     public string AgentId { get; set; } = string.Empty;
     public string ModelDeploymentName { get; set; } = string.Empty;
     public string McpServerUri { get; set; } = string.Empty;

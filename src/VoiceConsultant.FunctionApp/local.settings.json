@@ -10,6 +10,7 @@
         "Cosmos__InsightsContainerName": "insights",
         "Cosmos__LeasesContainerName": "leases",
         "Foundry__ProjectEndpoint": "https://voicecon-ais.services.ai.azure.com/api/projects/voicecon-proj",
+        "Foundry__TenantId": "9d2116ce-afe6-4ce8-8bc3-c7c7b69856c2",
         "Foundry__AgentId": "voicecon-insight",
         "Foundry__ModelDeploymentName": "gpt-4o",
         "Foundry__McpServerUri": "http://localhost:7071"

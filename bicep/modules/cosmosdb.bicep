@@ -33,7 +33,7 @@ resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2024-08-15' = {
       }
     ]
     capabilities: []
-    disableLocalAuth: true
+    disableLocalAuth: false
   }
 }
 

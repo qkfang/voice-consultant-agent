@@ -24,7 +24,13 @@ public class FoundryAgentService
         var foundryOptions = options.Value;
         _logger = logger;
 
-        var projectClient = new AIProjectClient(new Uri(foundryOptions.ProjectEndpoint), new DefaultAzureCredential());
+        var credentialOptions = new DefaultAzureCredentialOptions();
+        if (!string.IsNullOrWhiteSpace(foundryOptions.TenantId))
+        {
+            credentialOptions.TenantId = foundryOptions.TenantId;
+        }
+
+        var projectClient = new AIProjectClient(new Uri(foundryOptions.ProjectEndpoint), new DefaultAzureCredential(credentialOptions));
 
         var tools = new List<ResponseTool>();
         if (!string.IsNullOrWhiteSpace(foundryOptions.McpServerUri))
