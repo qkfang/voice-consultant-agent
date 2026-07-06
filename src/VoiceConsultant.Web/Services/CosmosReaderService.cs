@@ -21,7 +21,11 @@ public class CosmosReaderService
         {
             credentialOptions.TenantId = _options.TenantId;
         }
-        _client = new Lazy<CosmosClient>(() => new CosmosClient(_options.AccountEndpoint, new DefaultAzureCredential(credentialOptions)));
+        var clientOptions = new CosmosClientOptions
+        {
+            UseSystemTextJsonSerializerWithOptions = new System.Text.Json.JsonSerializerOptions()
+        };
+        _client = new Lazy<CosmosClient>(() => new CosmosClient(_options.AccountEndpoint, new DefaultAzureCredential(credentialOptions), clientOptions));
     }
 
     private Container ConversationsContainer =>
@@ -29,6 +33,24 @@ public class CosmosReaderService
 
     private Container InsightsContainer =>
         _client.Value.GetContainer(_options.DatabaseName, _options.InsightsContainerName);
+
+    /// <summary>
+    /// Writes a conversation document to the conversations container. This insert is what the
+    /// Function App change feed trigger listens for.
+    /// </summary>
+    public async Task SaveConversationAsync(ConversationDocument conversation, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(conversation.Id))
+        {
+            conversation.Id = Guid.NewGuid().ToString();
+        }
+        if (conversation.CreatedAt == default)
+        {
+            conversation.CreatedAt = DateTimeOffset.UtcNow;
+        }
+
+        await ConversationsContainer.CreateItemAsync(conversation, new PartitionKey(conversation.CallId), cancellationToken: cancellationToken);
+    }
 
     public async Task<List<CallSummary>> GetRecentCallsAsync(int maxItems = 50, CancellationToken cancellationToken = default)
     {

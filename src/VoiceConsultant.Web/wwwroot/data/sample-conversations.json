@@ -1,0 +1,53 @@
+[
+  {
+    "name": "Financial hardship - job loss",
+    "consultantId": "consultant-01",
+    "customerId": "customer-01",
+    "turns": [
+      "Consultant: Thanks for calling support, how can I help you today?",
+      "Customer: Hi, I'm really worried. I lost my job last month and I can't keep up with my repayments.",
+      "Consultant: I'm sorry to hear that. Let's see what options we have to help you through this.",
+      "Customer: I've already missed one payment and the late fees are adding up fast.",
+      "Consultant: I understand. Would a temporary payment pause or a reduced plan work better for you right now?",
+      "Customer: A reduced plan might help, but I'm not sure how long I'll be out of work.",
+      "Consultant: That's okay, we can set a short-term arrangement and review it in three months.",
+      "Customer: That would take a lot of pressure off. Can you also stop the late fees?",
+      "Consultant: Yes, I can waive the recent late fee and note the hardship on your account.",
+      "Customer: Thank you so much, that's a huge relief."
+    ]
+  },
+  {
+    "name": "Billing dispute - unexpected charge",
+    "consultantId": "consultant-02",
+    "customerId": "customer-02",
+    "turns": [
+      "Consultant: Good afternoon, what can I do for you today?",
+      "Customer: I was charged twice this month and I don't understand why.",
+      "Consultant: Let me pull up your account and take a look at the recent charges.",
+      "Customer: One charge is the usual amount, but the second one is larger.",
+      "Consultant: I can see a duplicate transaction plus an adjustment fee. That doesn't look right.",
+      "Customer: I definitely didn't authorise a second payment.",
+      "Consultant: I'll reverse the duplicate charge and remove the adjustment fee for you.",
+      "Customer: How long will the refund take to appear?",
+      "Consultant: It should be back on your statement within three to five business days.",
+      "Customer: Great, thanks for sorting that out quickly."
+    ]
+  },
+  {
+    "name": "Service upgrade - positive experience",
+    "consultantId": "consultant-03",
+    "customerId": "customer-03",
+    "turns": [
+      "Consultant: Hello, thanks for reaching out. How can I help?",
+      "Customer: Hi, my current plan feels a bit slow and I'd like to upgrade.",
+      "Consultant: Happy to help. Are you mostly after faster speeds or more data?",
+      "Customer: Faster speeds mainly, I work from home and do a lot of video calls.",
+      "Consultant: In that case the premium tier would suit you well and it's on offer this month.",
+      "Customer: What's the difference in price?",
+      "Consultant: It's only a small increase, and the first month is discounted.",
+      "Customer: That sounds fair. Will I need any new equipment?",
+      "Consultant: No new equipment needed, I can switch you over remotely right now.",
+      "Customer: Perfect, let's do it. Thanks for making that easy."
+    ]
+  }
+]

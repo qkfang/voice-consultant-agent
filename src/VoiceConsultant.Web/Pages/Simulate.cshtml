@@ -1,0 +1,80 @@
+@page
+@model SimulateModel
+@{
+    ViewData["Title"] = "Simulate Chat";
+}
+
+<h1>Simulate Chat</h1>
+<p>Create a simulated conversation and save it to Cosmos DB to trigger the Function App change feed.</p>
+
+@if (Model.StatusMessage is not null)
+{
+    <div class="alert alert-success">@Model.StatusMessage</div>
+}
+@if (Model.ErrorMessage is not null)
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+
+<form method="post">
+    <div class="mb-3">
+        <label for="samplePicker" class="form-label">Sample dialog</label>
+        <select id="samplePicker" class="form-select">
+            <option value="">-- Select a sample dialog --</option>
+        </select>
+        <div class="form-text">Pick a sample to auto-fill a 10-turn conversation.</div>
+    </div>
+    <div class="mb-3">
+        <label asp-for="CallId" class="form-label">Call Id</label>
+        <input asp-for="CallId" class="form-control" />
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="ConsultantId" class="form-label">Consultant Id</label>
+            <input asp-for="ConsultantId" class="form-control" />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="CustomerId" class="form-label">Customer Id</label>
+            <input asp-for="CustomerId" class="form-control" />
+        </div>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Transcript" class="form-label">Transcript</label>
+        <textarea asp-for="Transcript" class="form-control" rows="8" placeholder="Consultant: How can I help you today?&#10;Customer: I'm struggling to pay my bills this month."></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Save to Cosmos DB</button>
+</form>
+
+@section Scripts {
+    <script>
+        (function () {
+            const picker = document.getElementById('samplePicker');
+            const consultant = document.getElementById('ConsultantId');
+            const customer = document.getElementById('CustomerId');
+            const transcript = document.getElementById('Transcript');
+            let samples = [];
+
+            fetch('/data/sample-conversations.json')
+                .then(response => response.json())
+                .then(data => {
+                    samples = data;
+                    data.forEach((sample, index) => {
+                        const option = document.createElement('option');
+                        option.value = index;
+                        option.textContent = sample.name;
+                        picker.appendChild(option);
+                    });
+                });
+
+            picker.addEventListener('change', function () {
+                if (this.value === '') {
+                    return;
+                }
+                const sample = samples[this.value];
+                consultant.value = sample.consultantId || '';
+                customer.value = sample.customerId || '';
+                transcript.value = sample.turns.join('\n');
+            });
+        })();
+    </script>
+}

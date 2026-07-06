@@ -35,4 +35,22 @@ public class CosmosService
 
     public Task<ItemResponse<InsightDocument>> SaveInsightAsync(InsightDocument insight, CancellationToken cancellationToken = default) =>
         InsightsContainer.UpsertItemAsync(insight, new PartitionKey(insight.CallId), cancellationToken: cancellationToken);
+
+    public async Task<ConversationDocument?> GetLatestConversationAsync(string callId, CancellationToken cancellationToken = default)
+    {
+        var query = new QueryDefinition("SELECT * FROM c WHERE c.callId = @callId ORDER BY c.createdAt DESC")
+            .WithParameter("@callId", callId);
+
+        using var iterator = ConversationsContainer.GetItemQueryIterator<ConversationDocument>(
+            query,
+            requestOptions: new QueryRequestOptions { PartitionKey = new PartitionKey(callId), MaxItemCount = 1 });
+
+        if (iterator.HasMoreResults)
+        {
+            var page = await iterator.ReadNextAsync(cancellationToken);
+            return page.FirstOrDefault();
+        }
+
+        return null;
+    }
 }

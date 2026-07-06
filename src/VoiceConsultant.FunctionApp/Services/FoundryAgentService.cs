@@ -1,70 +1,54 @@
-using Azure.AI.Agents.Persistent;
+using Azure.AI.Projects;
 using Azure.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using OpenAI.Responses;
+using VoiceConsultant.FunctionApp.Agents;
 using VoiceConsultant.FunctionApp.Models;
 
 namespace VoiceConsultant.FunctionApp.Services;
 
 /// <summary>
-/// Sends a call transcript to the Microsoft Foundry prompt agent and parses back
-/// the hardship/issue detection feedback.
+/// Sends a call transcript to the Foundry conversation insight agent and parses the response.
 /// </summary>
 public class FoundryAgentService
 {
-    private readonly PersistentAgentsClient _client;
-    private readonly FoundryOptions _options;
+    private readonly ConversationInsightAgent _agent;
     private readonly ILogger<FoundryAgentService> _logger;
 
-    public FoundryAgentService(IOptions<FoundryOptions> options, ILogger<FoundryAgentService> logger)
+    public FoundryAgentService(
+        IOptions<FoundryOptions> options,
+        ILoggerFactory loggerFactory,
+        ILogger<FoundryAgentService> logger)
     {
-        _options = options.Value;
+        var foundryOptions = options.Value;
         _logger = logger;
-        _client = new PersistentAgentsClient(_options.ProjectEndpoint, new DefaultAzureCredential());
+
+        var projectClient = new AIProjectClient(new Uri(foundryOptions.ProjectEndpoint), new DefaultAzureCredential());
+
+        var tools = new List<ResponseTool>();
+        if (!string.IsNullOrWhiteSpace(foundryOptions.McpServerUri))
+        {
+            tools.Add(ResponseTool.CreateMcpTool(
+                serverLabel: "voicecon-mcp",
+                serverUri: new Uri($"{foundryOptions.McpServerUri.TrimEnd('/')}/mcp"),
+                toolCallApprovalPolicy: new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)));
+        }
+
+        _agent = new ConversationInsightAgent(
+            projectClient,
+            foundryOptions.ModelDeploymentName,
+            tools,
+            loggerFactory.CreateLogger<ConversationInsightAgent>());
     }
 
     public async Task<InsightDocument> AnalyzeAsync(ConversationDocument conversation, CancellationToken cancellationToken = default)
     {
-        var thread = await _client.Threads.CreateThreadAsync(cancellationToken: cancellationToken);
+        var responseText = await _agent.RunAsync(conversation.Transcript);
 
-        var prompt = $"Review the following call centre transcript. Identify any signs of customer hardship, " +
-                     $"list any issues raised by the customer, and suggest actions for the consultant. " +
-                     $"Respond in JSON with fields: hardshipDetected (boolean), issues (array of strings), " +
-                     $"suggestions (array of strings), summary (string).\n\nTranscript:\n{conversation.Transcript}";
-
-        await _client.Messages.CreateMessageAsync(thread.Value.Id, MessageRole.User, prompt, cancellationToken: cancellationToken);
-
-        var run = await _client.Runs.CreateRunAsync(thread.Value.Id, _options.AgentId, cancellationToken: cancellationToken);
-        var runValue = run.Value;
-
-        while (runValue.Status == RunStatus.Queued || runValue.Status == RunStatus.InProgress)
+        if (string.IsNullOrWhiteSpace(responseText))
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(500), cancellationToken);
-            runValue = (await _client.Runs.GetRunAsync(thread.Value.Id, runValue.Id, cancellationToken)).Value;
-        }
-
-        if (runValue.Status != RunStatus.Completed)
-        {
-            _logger.LogWarning("Foundry agent run for call {CallId} ended with status {Status}", conversation.CallId, runValue.Status);
-            return new InsightDocument
-            {
-                CallId = conversation.CallId,
-                ConversationId = conversation.Id,
-                Summary = $"Agent run did not complete successfully (status: {runValue.Status})."
-            };
-        }
-
-        var messages = _client.Messages.GetMessagesAsync(thread.Value.Id, order: ListSortOrder.Descending, cancellationToken: cancellationToken);
-        string responseText = string.Empty;
-        await foreach (var message in messages)
-        {
-            if (message.Role != MessageRole.Agent)
-            {
-                continue;
-            }
-
-            responseText = string.Concat(message.ContentItems.OfType<MessageTextContent>().Select(c => c.Text));
-            break;
+            _logger.LogWarning("Foundry agent returned no output for call {CallId}", conversation.CallId);
         }
 
         return AgentResponseParser.Parse(responseText, conversation);
