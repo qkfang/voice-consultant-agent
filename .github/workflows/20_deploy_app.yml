@@ -12,7 +12,8 @@ permissions:
   contents: read
 
 env:
-  PROJECT_NAME: '' # {projectName}
+  PROJECT_NAME: 'voice_consultant'
+  PROJECT_ABBR: 'voicecon'
 
 jobs:
   build-and-deploy:
@@ -50,7 +51,7 @@ jobs:
         with:
           inlineScript: |
             az webapp deploy \
-              --resource-group rg-${{ env.PROJECT_NAME }} \
-              --name noisecap-web \
+              --resource-group rg-${{ env.PROJECT_ABBR }} \
+              --name ${{ env.PROJECT_ABBR }}-web \
               --src-path ${{ github.workspace }}/app.zip \
               --type zip

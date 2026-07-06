@@ -11,8 +11,8 @@ permissions:
   contents: read
 
 env:
-  PROJECT_NAME: '' # {projectName}
-  PROJECT_ABBR: '' # {projectAbbr}
+  PROJECT_NAME: 'voice_consultant'
+  PROJECT_ABBR: 'voicecon' 
 
 jobs:
   deploy-dev:
@@ -27,13 +27,13 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}s
 
       - name: Create Resource Group
-        run: az group create --name 'rg-${{ env.PROJECT_NAME }}' --location 'eastus2'
+        run: az group create --name 'rg-${{ env.PROJECT_ABBR }}' --location 'eastus2'
 
       - name: Deploy Bicep
         working-directory: bicep
         run: |
           az deployment group create \
             --name 'deploy-${{ env.PROJECT_NAME }}' \
-            --resource-group 'rg-${{ env.PROJECT_NAME }}' \
+            --resource-group 'rg-${{ env.PROJECT_ABBR }}' \
             --template-file './main.bicep' \
             --parameters './main.bicepparam'

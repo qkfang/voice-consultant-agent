@@ -42,7 +42,6 @@ var cosmosAccountName = toLower('${projectAbbr}-cosmos')
 
 var aiProjectName = '${projectAbbr}-proj'
 var aiServicesName = '${projectAbbr}-ais'
-var bingSearchName = '${projectAbbr}-bing'
 var fabricCapacityName = '${projectAbbr}fabric'
 
 
@@ -69,13 +68,6 @@ module foundry './modules/foundry.bicep' = {
     location: location
     foundryServicesName: aiServicesName
     foundryProjectName: aiProjectName
-  }
-}
-
-module bing './modules/bing.bicep' = {
-  name: 'bing'
-  params: {
-    bingSearchName: bingSearchName
   }
 }
 
