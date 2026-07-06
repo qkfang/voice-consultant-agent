@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "VoiceConsultant.FunctionApp": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7243",
+      "launchBrowser": false
+    }
+  }
+}

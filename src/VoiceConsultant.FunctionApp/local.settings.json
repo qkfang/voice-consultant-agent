@@ -1,0 +1,14 @@
+{
+    "IsEncrypted": false,
+    "Values": {
+        "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+        "Cosmos__accountEndpoint": "https://<your-cosmos-account>.documents.azure.com:443/",
+        "Cosmos__DatabaseName": "voiceconsultant",
+        "Cosmos__ConversationsContainerName": "conversations",
+        "Cosmos__InsightsContainerName": "insights",
+        "Cosmos__LeasesContainerName": "leases",
+        "Foundry__ProjectEndpoint": "https://<your-foundry-project>.services.ai.azure.com/api/projects/<project-name>",
+        "Foundry__AgentId": "<your-foundry-agent-id>"
+    }
+}

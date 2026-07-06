@@ -13,14 +13,17 @@ param appServiceSku string
 @description('App Insights connection string')
 param appInsightsConnectionString string
 
-@description('Storage account name used for noise log blobs')
-param storageAccountName string
+@description('Cosmos DB account endpoint')
+param cosmosAccountEndpoint string
 
-@description('Storage container name used for noise log blobs')
-param logsContainerName string
+@description('Cosmos DB database name')
+param cosmosDatabaseName string
 
-@description('Folder path for local JSON persistence')
-param localDataFolder string = '/home/site/data'
+@description('Cosmos DB conversations container name')
+param cosmosConversationsContainerName string
+
+@description('Cosmos DB insights container name')
+param cosmosInsightsContainerName string
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = {
   name: appServicePlanName
@@ -45,7 +48,7 @@ resource webApp 'Microsoft.Web/sites@2023-12-01' = {
     serverFarmId: appServicePlan.id
     siteConfig: {
       linuxFxVersion: 'DOTNETCORE|10.0'
-      appCommandLine: 'dotnet NoiseCapture.Web.dll'
+      appCommandLine: 'dotnet VoiceConsultant.Web.dll'
       appSettings: [
         {
           name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
@@ -60,20 +63,20 @@ resource webApp 'Microsoft.Web/sites@2023-12-01' = {
           value: '1'
         }
         {
-          name: 'NoiseStorage__AccountUrl'
-          value: 'https://${storageAccountName}.blob.${environment().suffixes.storage}'
+          name: 'Cosmos__AccountEndpoint'
+          value: cosmosAccountEndpoint
         }
         {
-          name: 'NoiseStorage__ContainerName'
-          value: logsContainerName
+          name: 'Cosmos__DatabaseName'
+          value: cosmosDatabaseName
         }
         {
-          name: 'NoiseStorage__TenantId'
-          value: subscription().tenantId
+          name: 'Cosmos__ConversationsContainerName'
+          value: cosmosConversationsContainerName
         }
         {
-          name: 'LocalData__FolderPath'
-          value: localDataFolder
+          name: 'Cosmos__InsightsContainerName'
+          value: cosmosInsightsContainerName
         }
       ]
     }

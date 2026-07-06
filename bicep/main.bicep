@@ -19,21 +19,26 @@ param projectName string
 ])
 param appServiceSku string = 'S1'
 
-@description('Blob container name for noise log files')
-param logsContainerName string = 'noise-logs'
-
-@description('Additional principals to grant Storage Blob Data Contributor on the storage account')
+@description('Additional principals to grant Cosmos DB data access')
 param principals array = []
 
 @description('UPN/email addresses of Fabric capacity administrators')
 param fabricAdminMembers array = []
 
+@description('Azure AI Foundry agent id used by the function app to analyse call conversations')
+param foundryAgentId string = ''
+
 var logAnalyticsName = '${projectAbbr}-law'
 var appInsightsName = '${projectAbbr}-appi'
-var storageAccountName = toLower('${projectAbbr}sa')
+var functionsStorageAccountName = toLower('${projectAbbr}fasa')
 
 var appServicePlanName = '${projectAbbr}-plan'
 var webAppName = '${projectAbbr}-web'
+
+var functionAppPlanName = '${projectAbbr}-func-plan'
+var functionAppName = '${projectAbbr}-func'
+
+var cosmosAccountName = toLower('${projectAbbr}-cosmos')
 
 var aiProjectName = '${projectAbbr}-proj'
 var aiServicesName = '${projectAbbr}-ais'
@@ -50,12 +55,11 @@ module monitoring './modules/monitoring.bicep' = {
   }
 }
 
-module storage './modules/storage.bicep' = {
-  name: 'storage'
+module cosmos './modules/cosmosdb.bicep' = {
+  name: 'cosmos'
   params: {
     location: location
-    storageAccountName: storageAccountName
-    logsContainerName: logsContainerName
+    accountName: cosmosAccountName
   }
 }
 
@@ -94,32 +98,84 @@ module appService './modules/appservice.bicep' = {
     appServicePlanName: appServicePlanName
     appServiceSku: appServiceSku
     appInsightsConnectionString: monitoring.outputs.appInsightsConnectionString
-    storageAccountName: storageAccountName
-    logsContainerName: logsContainerName
+    cosmosAccountEndpoint: cosmos.outputs.documentEndpoint
+    cosmosDatabaseName: cosmos.outputs.databaseName
+    cosmosConversationsContainerName: cosmos.outputs.conversationsContainerName
+    cosmosInsightsContainerName: cosmos.outputs.insightsContainerName
   }
 }
 
-
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing = {
-  name: storageAccountName
+module functionApp './modules/functionapp.bicep' = {
+  name: 'functionapp'
+  params: {
+    location: location
+    functionAppName: functionAppName
+    appServicePlanName: functionAppPlanName
+    storageAccountName: functionsStorageAccountName
+    appInsightsConnectionString: monitoring.outputs.appInsightsConnectionString
+    cosmosAccountEndpoint: cosmos.outputs.documentEndpoint
+    cosmosDatabaseName: cosmos.outputs.databaseName
+    cosmosConversationsContainerName: cosmos.outputs.conversationsContainerName
+    cosmosInsightsContainerName: cosmos.outputs.insightsContainerName
+    cosmosLeasesContainerName: cosmos.outputs.leasesContainerName
+    foundryProjectEndpoint: foundry.outputs.aiProjectEndpoint
+    foundryAgentId: foundryAgentId
+  }
 }
 
-resource blobDataContributorAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  scope: storageAccount
-  name: guid(storageAccountName, webAppName, 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
+resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2024-08-15' existing = {
+  name: cosmosAccountName
+  dependsOn: [
+    cosmos
+  ]
+}
+
+var cosmosDataContributorRoleId = '00000000-0000-0000-0000-000000000002'
+var cosmosDataReaderRoleId = '00000000-0000-0000-0000-000000000001'
+
+// Function App needs read/write access to conversations, insights and leases containers
+resource functionAppCosmosRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2024-08-15' = {
+  parent: cosmosAccount
+  name: guid(cosmosAccount.id, functionAppName, cosmosDataContributorRoleId)
   properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
+    roleDefinitionId: '${cosmosAccount.id}/sqlRoleDefinitions/${cosmosDataContributorRoleId}'
+    principalId: functionApp.outputs.principalId
+    scope: cosmosAccount.id
+  }
+}
+
+// Web App only needs to read conversations/insights to display them
+resource webAppCosmosRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2024-08-15' = {
+  parent: cosmosAccount
+  name: guid(cosmosAccount.id, webAppName, cosmosDataReaderRoleId)
+  properties: {
+    roleDefinitionId: '${cosmosAccount.id}/sqlRoleDefinitions/${cosmosDataReaderRoleId}'
     principalId: appService.outputs.principalId
+    scope: cosmosAccount.id
+  }
+}
+
+resource principalCosmosDataContributorAssignments 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2024-08-15' = [for principal in principals: {
+  parent: cosmosAccount
+  name: guid(cosmosAccount.id, principal.id, cosmosDataContributorRoleId)
+  properties: {
+    roleDefinitionId: '${cosmosAccount.id}/sqlRoleDefinitions/${cosmosDataContributorRoleId}'
+    principalId: principal.id
+    scope: cosmosAccount.id
+  }
+}]
+
+resource foundryAccount 'Microsoft.CognitiveServices/accounts@2025-10-01-preview' existing = {
+  name: aiServicesName
+}
+
+// Function App needs to call the Azure AI Foundry agent
+resource functionAppFoundryRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  scope: foundryAccount
+  name: guid(foundryAccount.id, functionAppName, '64702f94-c441-49e6-a78b-ef80e0188fee')
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '64702f94-c441-49e6-a78b-ef80e0188fee')
+    principalId: functionApp.outputs.principalId
     principalType: 'ServicePrincipal'
   }
 }
-
-resource principalBlobDataContributorAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for principal in principals: {
-  scope: storageAccount
-  name: guid(storageAccountName, principal.id, 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
-  properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
-    principalId: principal.id
-    principalType: principal.principalType
-  }
-}]
