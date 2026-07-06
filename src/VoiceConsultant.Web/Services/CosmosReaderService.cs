@@ -16,7 +16,12 @@ public class CosmosReaderService
     public CosmosReaderService(IOptions<CosmosOptions> options)
     {
         _options = options.Value;
-        _client = new Lazy<CosmosClient>(() => new CosmosClient(_options.AccountEndpoint, new DefaultAzureCredential()));
+        var credentialOptions = new DefaultAzureCredentialOptions();
+        if (!string.IsNullOrWhiteSpace(_options.TenantId))
+        {
+            credentialOptions.TenantId = _options.TenantId;
+        }
+        _client = new Lazy<CosmosClient>(() => new CosmosClient(_options.AccountEndpoint, new DefaultAzureCredential(credentialOptions)));
     }
 
     private Container ConversationsContainer =>
