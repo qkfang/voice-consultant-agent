@@ -34,6 +34,9 @@ param fabricWorkspaceId string = ''
 @description('Fabric lakehouse id used by the function app to store final agent output')
 param fabricLakehouseId string = ''
 
+@description('Object id of the CI/deployment principal that uploads the function package')
+param deploymentPrincipalId string = ''
+
 var logAnalyticsName = '${projectAbbr}-law'
 var appInsightsName = '${projectAbbr}-appi'
 var functionsStorageAccountName = toLower('${projectAbbr}fasa')
@@ -120,6 +123,7 @@ module functionApp './modules/functionapp.bicep' = {
     foundryAgentId: foundryAgentId
     fabricWorkspaceId: fabricWorkspaceId
     fabricLakehouseId: fabricLakehouseId
+    deploymentPrincipalId: deploymentPrincipalId
   }
 }
 

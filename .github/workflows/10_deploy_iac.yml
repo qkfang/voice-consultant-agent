@@ -27,7 +27,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Create Resource Group
-        run: az group create --name 'rg-${{ env.PROJECT_ABBR }}' --location 'eastus2'
+        run: az group create --name 'rg-${{ env.PROJECT_ABBR }}' --location 'australiaeast'
 
       - name: Deploy Bicep
         working-directory: bicep

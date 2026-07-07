@@ -15,3 +15,6 @@ param fabricAdminMembers = [
   'danielfang@MngEnvMCAP951655.onmicrosoft.com'
   'fabric@MngEnvMCAP951655.onmicrosoft.com'
 ]
+
+// Object id of the service principal used by the GitHub Actions deployment (AZURE_CREDENTIALS)
+param deploymentPrincipalId = ''
