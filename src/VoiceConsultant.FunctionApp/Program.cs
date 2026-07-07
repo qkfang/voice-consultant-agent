@@ -15,9 +15,11 @@ builder.ConfigureFunctionsWebApplication();
 
 builder.Services.Configure<CosmosOptions>(builder.Configuration.GetSection("Cosmos"));
 builder.Services.Configure<FoundryOptions>(builder.Configuration.GetSection("Foundry"));
+builder.Services.Configure<FabricOptions>(builder.Configuration.GetSection("Fabric"));
 
 builder.Services.AddSingleton<CosmosService>();
 builder.Services.AddSingleton<FoundryAgentService>();
+builder.Services.AddHttpClient<FabricLakehouseService>();
 builder.Services.AddSingleton<ConversationInsightService>();
 
 builder.Services.AddSingleton<VoiceConsultantMcpTools>();

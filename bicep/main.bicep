@@ -28,6 +28,12 @@ param fabricAdminMembers array = []
 @description('Azure AI Foundry agent id used by the function app to analyse call conversations')
 param foundryAgentId string = ''
 
+@description('Fabric workspace id used by the function app to store final agent output')
+param fabricWorkspaceId string = ''
+
+@description('Fabric lakehouse id used by the function app to store final agent output')
+param fabricLakehouseId string = ''
+
 var logAnalyticsName = '${projectAbbr}-law'
 var appInsightsName = '${projectAbbr}-appi'
 var functionsStorageAccountName = toLower('${projectAbbr}fasa')
@@ -112,6 +118,8 @@ module functionApp './modules/functionapp.bicep' = {
     cosmosLeasesContainerName: cosmos.outputs.leasesContainerName
     foundryProjectEndpoint: foundry.outputs.aiProjectEndpoint
     foundryAgentId: foundryAgentId
+    fabricWorkspaceId: fabricWorkspaceId
+    fabricLakehouseId: fabricLakehouseId
   }
 }
 

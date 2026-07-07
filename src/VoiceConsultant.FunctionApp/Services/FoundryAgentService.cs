@@ -55,7 +55,7 @@ public class FoundryAgentService
             loggerFactory.CreateLogger<ConversationInsightAgent>());
     }
 
-    public async Task<InsightDocument> AnalyzeAsync(ConversationDocument conversation, CancellationToken cancellationToken = default)
+    public async Task<FoundryAnalysisResult> AnalyzeAsync(ConversationDocument conversation, CancellationToken cancellationToken = default)
     {
         var responseText = await _agent.RunAsync(conversation.Transcript);
 
@@ -64,6 +64,10 @@ public class FoundryAgentService
             _logger.LogWarning("Foundry agent returned no output for call {CallId}", conversation.CallId);
         }
 
-        return AgentResponseParser.Parse(responseText, conversation);
+        return new FoundryAnalysisResult(
+            AgentResponseParser.Parse(responseText, conversation),
+            responseText);
     }
 }
+
+public sealed record FoundryAnalysisResult(InsightDocument Insight, string ResponseText);

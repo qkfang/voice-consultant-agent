@@ -34,6 +34,12 @@ param foundryProjectEndpoint string
 @description('Azure AI Foundry agent id used to analyse conversations')
 param foundryAgentId string
 
+@description('Fabric workspace id for writing final agent output to the lakehouse')
+param fabricWorkspaceId string = ''
+
+@description('Fabric lakehouse id for writing final agent output')
+param fabricLakehouseId string = ''
+
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
   name: storageAccountName
   location: location
@@ -119,6 +125,18 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
         {
           name: 'Foundry__AgentId'
           value: foundryAgentId
+        }
+        {
+          name: 'Fabric__OneLakeUri'
+          value: 'https://onelake.dfs.fabric.microsoft.com'
+        }
+        {
+          name: 'Fabric__WorkspaceId'
+          value: fabricWorkspaceId
+        }
+        {
+          name: 'Fabric__LakehouseId'
+          value: fabricLakehouseId
         }
       ]
     }

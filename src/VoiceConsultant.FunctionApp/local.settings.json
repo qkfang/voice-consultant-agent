@@ -13,6 +13,10 @@
         "Foundry__TenantId": "9d2116ce-afe6-4ce8-8bc3-c7c7b69856c2",
         "Foundry__AgentId": "voicecon-insight",
         "Foundry__ModelDeploymentName": "gpt-5.4",
-        "Foundry__McpServerUri": ""
+        "Foundry__McpServerUri": "",
+        "Fabric__TenantId": "",
+        "Fabric__OneLakeUri": "https://onelake.dfs.fabric.microsoft.com",
+        "Fabric__WorkspaceId": "",
+        "Fabric__LakehouseId": ""
     }
 }
