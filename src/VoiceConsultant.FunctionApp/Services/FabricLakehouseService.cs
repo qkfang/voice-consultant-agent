@@ -125,7 +125,9 @@ public class FabricLakehouseService
     /// </summary>
     private sealed class FabricLakehouseAgentOutput
     {
+        /// <summary>Identifier from the raw transcription document.</summary>
         public string TranscriptionId { get; set; } = string.Empty;
+        /// <summary>Final response text returned by the agent.</summary>
         public string Output { get; set; } = string.Empty;
     }
 }
