@@ -4,7 +4,8 @@ on:
   push:
     branches: [main]
     paths:
-      - "src/Web/**"
+      - "src/VoiceConsultant.Web/**"
+      - "src/VoiceConsultant.FunctionApp/**"
       - ".github/workflows/20_deploy_app.yml"
   workflow_dispatch:
 
@@ -16,7 +17,7 @@ env:
   PROJECT_ABBR: 'voicecon'
 
 jobs:
-  build-and-deploy:
+  deploy-web:
     runs-on: ubuntu-latest
     environment: dev
 
@@ -30,16 +31,16 @@ jobs:
           dotnet-quality: 'preview'
 
       - name: Restore
-        working-directory: src/Web
-        run: dotnet restore NoiseCapture.Web.csproj
+        working-directory: src/VoiceConsultant.Web
+        run: dotnet restore VoiceConsultant.Web.csproj
 
       - name: Publish
-        working-directory: src/Web
-        run: dotnet publish NoiseCapture.Web.csproj -c Release -o ${{ github.workspace }}/publish --no-restore
+        working-directory: src/VoiceConsultant.Web
+        run: dotnet publish VoiceConsultant.Web.csproj -c Release -o ${{ github.workspace }}/publish-web --no-restore
 
       - name: Zip publish output
-        working-directory: ${{ github.workspace }}/publish
-        run: zip -r ${{ github.workspace }}/app.zip .
+        working-directory: ${{ github.workspace }}/publish-web
+        run: zip -r ${{ github.workspace }}/web.zip .
 
       - name: Azure CLI Login
         uses: azure/login@v1
@@ -53,5 +54,36 @@ jobs:
             az webapp deploy \
               --resource-group rg-${{ env.PROJECT_ABBR }} \
               --name ${{ env.PROJECT_ABBR }}-web \
-              --src-path ${{ github.workspace }}/app.zip \
+              --src-path ${{ github.workspace }}/web.zip \
               --type zip
+
+  deploy-func:
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        working-directory: src/VoiceConsultant.FunctionApp
+        run: dotnet restore VoiceConsultant.FunctionApp.csproj
+
+      - name: Publish
+        working-directory: src/VoiceConsultant.FunctionApp
+        run: dotnet publish VoiceConsultant.FunctionApp.csproj -c Release -o ${{ github.workspace }}/publish-func --no-restore
+
+      - name: Azure CLI Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to Azure Function App
+        uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ env.PROJECT_ABBR }}-func
+          package: ${{ github.workspace }}/publish-func

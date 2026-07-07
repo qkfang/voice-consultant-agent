@@ -24,7 +24,7 @@ jobs:
       - name: Azure CLI Login
         uses: azure/login@v1 # must use v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}s
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Create Resource Group
         run: az group create --name 'rg-${{ env.PROJECT_ABBR }}' --location 'eastus2'
