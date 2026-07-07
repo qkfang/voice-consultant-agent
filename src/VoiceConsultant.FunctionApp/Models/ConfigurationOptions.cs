@@ -22,6 +22,8 @@ public class FabricOptions
 {
     public string TenantId { get; set; } = string.Empty;
     public string OneLakeUri { get; set; } = "https://onelake.dfs.fabric.microsoft.com";
+    /// <summary>Fabric workspace identifier used in the OneLake path.</summary>
     public string WorkspaceId { get; set; } = string.Empty;
+    /// <summary>Fabric lakehouse identifier used in the OneLake path.</summary>
     public string LakehouseId { get; set; } = string.Empty;
 }

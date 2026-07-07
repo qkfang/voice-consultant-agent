@@ -119,6 +119,10 @@ public class FabricLakehouseService
         response.EnsureSuccessStatusCode();
     }
 
+    /// <summary>
+    /// Minimal payload persisted to Fabric lakehouse for downstream processing.
+    /// Only includes the raw transcription id and the final agent output text.
+    /// </summary>
     private sealed class FabricLakehouseAgentOutput
     {
         public string TranscriptionId { get; set; } = string.Empty;
