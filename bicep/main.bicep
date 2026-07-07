@@ -25,6 +25,9 @@ param principals array = []
 @description('UPN/email addresses of Fabric capacity administrators')
 param fabricAdminMembers array = []
 
+@description('Deploy the Fabric capacity. Skipped by default.')
+param deployFabric bool = false
+
 @description('Azure AI Foundry agent id used by the function app to analyse call conversations')
 param foundryAgentId string = ''
 
@@ -80,7 +83,7 @@ module foundry './modules/foundry.bicep' = {
   }
 }
 
-module fabric './modules/fabric.bicep' = {
+module fabric './modules/fabric.bicep' = if (deployFabric) {
   name: 'fabric'
   params: {
     location: location

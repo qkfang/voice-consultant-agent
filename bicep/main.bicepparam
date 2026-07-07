@@ -16,5 +16,8 @@ param fabricAdminMembers = [
   'fabric@MngEnvMCAP951655.onmicrosoft.com'
 ]
 
+// Set to true to deploy the Fabric capacity. Skipped by default.
+param deployFabric = false
+
 // Object id of the service principal used by the GitHub Actions deployment (AZURE_CREDENTIALS)
 param deploymentPrincipalId = ''
