@@ -42,60 +42,53 @@ public class FabricLakehouseService
         _credential = new DefaultAzureCredential(credentialOptions);
     }
 
-    public async Task SaveAgentOutputAsync(string transcriptionId, string output, CancellationToken cancellationToken = default)
+    /// <summary>Writes the structured AI insight to Files/insights/{fileKey}.json.</summary>
+    public async Task SaveInsightAsync(string fileKey, InsightDocument insight, CancellationToken cancellationToken = default)
     {
         if (!IsConfigured())
         {
-            _logger.LogInformation("Fabric lakehouse is not configured. Skipping lakehouse persistence for transcription {TranscriptionId}", transcriptionId);
+            _logger.LogInformation("Fabric lakehouse is not configured. Skipping insight upload for {FileKey}", fileKey);
             return;
         }
 
-        var payload = JsonSerializer.Serialize(
-            new FabricLakehouseAgentOutput
-            {
-                TranscriptionId = transcriptionId,
-                Output = output
-            },
-            JsonOptions);
+        await UploadFileAsync($"Files/insights/{fileKey}.json", JsonSerializer.Serialize(insight, JsonOptions), cancellationToken);
+        _logger.LogInformation("Stored insight in Fabric lakehouse: insights/{FileKey}.json", fileKey);
+    }
 
-        var content = Encoding.UTF8.GetBytes(payload);
-        var fileUri = BuildFileUri(transcriptionId);
-        var accessToken = await _credential.GetTokenAsync(new TokenRequestContext(TokenScopes), cancellationToken);
+    /// <summary>Writes the raw conversation transcript to Files/conversations/{fileKey}.json when LandTranscription is enabled.</summary>
+    public async Task SaveConversationAsync(string fileKey, ConversationDocument conversation, CancellationToken cancellationToken = default)
+    {
+        if (!IsConfigured() || !_options.LandTranscription)
+        {
+            return;
+        }
 
-        await SendAsync(
-            HttpMethod.Put,
-            $"{fileUri}?resource=file&overwrite=true",
-            accessToken.Token,
-            cancellationToken: cancellationToken);
-
-        await SendAsync(
-            HttpMethod.Patch,
-            $"{fileUri}?action=append&position=0",
-            accessToken.Token,
-            new ByteArrayContent(content),
-            cancellationToken);
-
-        await SendAsync(
-            HttpMethod.Patch,
-            $"{fileUri}?action=flush&position={content.Length}",
-            accessToken.Token,
-            cancellationToken: cancellationToken);
-
-        _logger.LogInformation("Stored final agent output in Fabric lakehouse for transcription {TranscriptionId}", transcriptionId);
+        await UploadFileAsync($"Files/conversations/{fileKey}.json", JsonSerializer.Serialize(conversation, JsonOptions), cancellationToken);
+        _logger.LogInformation("Stored conversation in Fabric lakehouse: conversations/{FileKey}.json", fileKey);
     }
 
     private bool IsConfigured() =>
         !string.IsNullOrWhiteSpace(_options.WorkspaceId) &&
         !string.IsNullOrWhiteSpace(_options.LakehouseId);
 
-    private string BuildFileUri(string transcriptionId)
+    private async Task UploadFileAsync(string relativePath, string content, CancellationToken cancellationToken)
+    {
+        var bytes = Encoding.UTF8.GetBytes(content);
+        var fileUri = BuildFileUri(relativePath);
+        var accessToken = await _credential.GetTokenAsync(new TokenRequestContext(TokenScopes), cancellationToken);
+
+        await SendAsync(HttpMethod.Put, $"{fileUri}?resource=file&overwrite=true", accessToken.Token, cancellationToken: cancellationToken);
+        await SendAsync(HttpMethod.Patch, $"{fileUri}?action=append&position=0", accessToken.Token, new ByteArrayContent(bytes), cancellationToken);
+        await SendAsync(HttpMethod.Patch, $"{fileUri}?action=flush&position={bytes.Length}", accessToken.Token, cancellationToken: cancellationToken);
+    }
+
+    private string BuildFileUri(string relativePath)
     {
         var baseUri = _options.OneLakeUri.TrimEnd('/');
         var workspace = Uri.EscapeDataString(_options.WorkspaceId);
         var lakehouse = Uri.EscapeDataString(_options.LakehouseId);
-        var fileName = $"agent-output-{Uri.EscapeDataString(transcriptionId)}.json";
 
-        return $"{baseUri}/{workspace}/{lakehouse}/Files/{fileName}";
+        return $"{baseUri}/{workspace}/{lakehouse}/{relativePath}";
     }
 
     private async Task SendAsync(
@@ -117,17 +110,5 @@ public class FabricLakehouseService
 
         using var response = await _httpClient.SendAsync(request, cancellationToken);
         response.EnsureSuccessStatusCode();
-    }
-
-    /// <summary>
-    /// Minimal payload persisted to Fabric lakehouse for downstream processing.
-    /// Only includes the raw transcription id and the final agent output text.
-    /// </summary>
-    private sealed class FabricLakehouseAgentOutput
-    {
-        /// <summary>Identifier from the raw transcription document.</summary>
-        public string TranscriptionId { get; set; } = string.Empty;
-        /// <summary>Final response text returned by the agent.</summary>
-        public string Output { get; set; } = string.Empty;
     }
 }
