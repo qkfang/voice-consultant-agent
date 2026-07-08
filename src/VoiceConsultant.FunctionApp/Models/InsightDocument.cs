@@ -32,4 +32,12 @@ public class InsightDocument
 
     [JsonPropertyName("generatedAt")]
     public DateTimeOffset GeneratedAt { get; set; } = DateTimeOffset.UtcNow;
+
+    /// <summary>UTC timestamp formatted as yyyyMMddHHmmssfff, used together with Id to build the OneLake file key.</summary>
+    [JsonPropertyName("timestamp")]
+    public string Timestamp { get; set; } = DateTimeOffset.UtcNow.ToString("yyyyMMddHHmmssfff");
+
+    /// <summary>Unique file key used to name files in the Fabric lakehouse: {Timestamp}_{Id}.</summary>
+    [JsonIgnore]
+    public string FileKey => $"{Timestamp}_{Id}";
 }

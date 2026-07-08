@@ -31,7 +31,10 @@ public class ConversationInsightService
 
         var analysis = await _foundryAgentService.AnalyzeAsync(conversation, cancellationToken);
         await _cosmosService.SaveInsightAsync(analysis.Insight, cancellationToken);
-        await _fabricLakehouseService.SaveAgentOutputAsync(conversation.Id, analysis.ResponseText, cancellationToken);
+
+        var fileKey = analysis.Insight.FileKey;
+        await _fabricLakehouseService.SaveInsightAsync(fileKey, analysis.Insight, cancellationToken);
+        await _fabricLakehouseService.SaveConversationAsync(fileKey, conversation, cancellationToken);
 
         _logger.LogInformation("Stored insight for call {CallId}, hardshipDetected={HardshipDetected}", conversation.CallId, analysis.Insight.HardshipDetected);
         return analysis.Insight;

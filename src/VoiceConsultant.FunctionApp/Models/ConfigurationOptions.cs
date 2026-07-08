@@ -26,4 +26,6 @@ public class FabricOptions
     public string WorkspaceId { get; set; } = string.Empty;
     /// <summary>Fabric lakehouse identifier used in the OneLake path.</summary>
     public string LakehouseId { get; set; } = string.Empty;
+    /// <summary>When true, also land the raw transcript to the transcription folder in OneLake.</summary>
+    public bool LandTranscription { get; set; } = false;
 }

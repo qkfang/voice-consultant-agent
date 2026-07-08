@@ -17,6 +17,7 @@
         "Fabric__TenantId": "",
         "Fabric__OneLakeUri": "https://onelake.dfs.fabric.microsoft.com",
         "Fabric__WorkspaceId": "",
-        "Fabric__LakehouseId": ""
+        "Fabric__LakehouseId": "",
+        "Fabric__LandTranscription": "true"
     }
 }
