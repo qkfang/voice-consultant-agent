@@ -51,7 +51,7 @@ public class FabricLakehouseService
             return;
         }
 
-        await UploadFileAsync($"Files/insights/{fileKey}.json", JsonSerializer.Serialize(insight, JsonOptions), cancellationToken);
+        await UploadFileAsync("insights", $"{fileKey}.json", JsonSerializer.Serialize(insight, JsonOptions), cancellationToken);
         _logger.LogInformation("Stored insight in Fabric lakehouse: insights/{FileKey}.json", fileKey);
     }
 
@@ -63,7 +63,7 @@ public class FabricLakehouseService
             return;
         }
 
-        await UploadFileAsync($"Files/conversations/{fileKey}.json", JsonSerializer.Serialize(conversation, JsonOptions), cancellationToken);
+        await UploadFileAsync("conversations", $"{fileKey}.json", JsonSerializer.Serialize(conversation, JsonOptions), cancellationToken);
         _logger.LogInformation("Stored conversation in Fabric lakehouse: conversations/{FileKey}.json", fileKey);
     }
 
@@ -71,10 +71,10 @@ public class FabricLakehouseService
         !string.IsNullOrWhiteSpace(_options.WorkspaceId) &&
         !string.IsNullOrWhiteSpace(_options.LakehouseId);
 
-    private async Task UploadFileAsync(string relativePath, string content, CancellationToken cancellationToken)
+    private async Task UploadFileAsync(string folder, string fileName, string content, CancellationToken cancellationToken)
     {
         var bytes = Encoding.UTF8.GetBytes(content);
-        var fileUri = BuildFileUri(relativePath);
+        var fileUri = BuildFileUri(folder, fileName);
         var accessToken = await _credential.GetTokenAsync(new TokenRequestContext(TokenScopes), cancellationToken);
 
         await SendAsync(HttpMethod.Put, $"{fileUri}?resource=file&overwrite=true", accessToken.Token, cancellationToken: cancellationToken);
@@ -82,13 +82,13 @@ public class FabricLakehouseService
         await SendAsync(HttpMethod.Patch, $"{fileUri}?action=flush&position={bytes.Length}", accessToken.Token, cancellationToken: cancellationToken);
     }
 
-    private string BuildFileUri(string relativePath)
+    private string BuildFileUri(string folder, string fileName)
     {
         var baseUri = _options.OneLakeUri.TrimEnd('/');
         var workspace = Uri.EscapeDataString(_options.WorkspaceId);
         var lakehouse = Uri.EscapeDataString(_options.LakehouseId);
 
-        return $"{baseUri}/{workspace}/{lakehouse}/{relativePath}";
+        return $"{baseUri}/{workspace}/{lakehouse}/Files/{folder}/{Uri.EscapeDataString(fileName)}";
     }
 
     private async Task SendAsync(

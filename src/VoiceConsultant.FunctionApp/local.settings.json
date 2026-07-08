@@ -16,8 +16,8 @@
         "Foundry__McpServerUri": "",
         "Fabric__TenantId": "",
         "Fabric__OneLakeUri": "https://onelake.dfs.fabric.microsoft.com",
-        "Fabric__WorkspaceId": "6d9003b1-ca61-42a8-8b95-2962e3d9a085",
-        "Fabric__LakehouseId": "46dfde66-933b-47c0-9433-5b92f9d497ca",
+        "Fabric__WorkspaceId": "",
+        "Fabric__LakehouseId": "",
         "Fabric__LandTranscription": "true"
     }
 }
