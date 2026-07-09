@@ -124,6 +124,7 @@ module functionApp './modules/functionapp.bicep' = {
     cosmosLeasesContainerName: cosmos.outputs.leasesContainerName
     foundryProjectEndpoint: foundry.outputs.aiProjectEndpoint
     foundryAgentId: foundryAgentId
+    foundryModelDeploymentName: foundry.outputs.modelDeploymentName
     fabricWorkspaceId: fabricWorkspaceId
     fabricLakehouseId: fabricLakehouseId
     deploymentPrincipalId: deploymentPrincipalId

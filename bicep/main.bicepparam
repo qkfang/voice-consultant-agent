@@ -20,4 +20,4 @@ param fabricAdminMembers = [
 param deployFabric = false
 
 // Object id of the service principal used by the GitHub Actions deployment (AZURE_CREDENTIALS)
-param deploymentPrincipalId = ''
+param deploymentPrincipalId = 'a6efe236-83c5-472b-a068-65006e369ad7'

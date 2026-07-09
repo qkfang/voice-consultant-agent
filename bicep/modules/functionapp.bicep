@@ -34,6 +34,9 @@ param foundryProjectEndpoint string
 @description('Azure AI Foundry agent id used to analyse conversations')
 param foundryAgentId string
 
+@description('Azure AI Foundry model deployment name used by the conversation insight agent')
+param foundryModelDeploymentName string
+
 @description('Fabric workspace id for writing final agent output to the lakehouse')
 param fabricWorkspaceId string = ''
 
@@ -128,6 +131,14 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
         {
           name: 'Foundry__AgentId'
           value: foundryAgentId
+        }
+        {
+          name: 'Foundry__ModelDeploymentName'
+          value: foundryModelDeploymentName
+        }
+        {
+          name: 'Foundry__McpServerUri'
+          value: 'https://${functionAppName}.azurewebsites.net'
         }
         {
           name: 'Fabric__OneLakeUri'
