@@ -32,7 +32,8 @@ public class FoundryAgentService
 
         // Locally there is no IMDS endpoint, so skip Managed Identity to avoid an
         // unrecoverable auth failure that would otherwise stop the credential chain.
-        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("WEBSITE_INSTANCE_ID")))
+        // WEBSITE_SITE_NAME is reliably set on the Azure Functions/App Service host.
+        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME")))
         {
             credentialOptions.ExcludeManagedIdentityCredential = true;
         }

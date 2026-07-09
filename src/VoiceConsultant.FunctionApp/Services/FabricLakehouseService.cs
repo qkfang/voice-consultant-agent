@@ -34,7 +34,8 @@ public class FabricLakehouseService
             credentialOptions.TenantId = _options.TenantId;
         }
 
-        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("WEBSITE_INSTANCE_ID")))
+        // WEBSITE_SITE_NAME is reliably set on the Azure Functions/App Service host.
+        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME")))
         {
             credentialOptions.ExcludeManagedIdentityCredential = true;
         }
