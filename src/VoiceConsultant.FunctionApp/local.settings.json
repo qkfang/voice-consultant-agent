@@ -14,7 +14,7 @@
         "Foundry__AgentId": "voicecon-insight",
         "Foundry__ModelDeploymentName": "gpt-5.4",
         "Foundry__McpServerUri": "https://voicecon-func.azurewebsites.net",
-        "Foundry__McpServerKey": "",
+        "Foundry__McpConnectionId": "",
         "Fabric__TenantId": "9d2116ce-afe6-4ce8-8bc3-c7c7b69856c2",
         "Fabric__OneLakeUri": "https://onelake.dfs.fabric.microsoft.com",
         "Fabric__WorkspaceId": "6d9003b1-ca61-42a8-8b95-2962e3d9a085",

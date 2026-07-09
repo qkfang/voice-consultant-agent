@@ -16,8 +16,8 @@ public class FoundryOptions
     public string AgentId { get; set; } = string.Empty;
     public string ModelDeploymentName { get; set; } = string.Empty;
     public string McpServerUri { get; set; } = string.Empty;
-    /// <summary>System key used to authenticate calls to the MCP webhook endpoint.</summary>
-    public string McpServerKey { get; set; } = string.Empty;
+    /// <summary>Foundry project connection that stores the MCP webhook credential (Custom keys type).</summary>
+    public string McpConnectionId { get; set; } = string.Empty;
 }
 
 public class FabricOptions

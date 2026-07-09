@@ -1,4 +1,5 @@
 using Azure.AI.Projects;
+using Azure.AI.Projects.Agents;
 using Azure.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -43,17 +44,19 @@ public class FoundryAgentService
         var tools = new List<ResponseTool>();
         if (!string.IsNullOrWhiteSpace(foundryOptions.McpServerUri))
         {
-            IDictionary<string, string>? headers = null;
-            if (!string.IsNullOrWhiteSpace(foundryOptions.McpServerKey))
-            {
-                headers = new Dictionary<string, string> { ["x-functions-key"] = foundryOptions.McpServerKey };
-            }
-
-            tools.Add(ResponseTool.CreateMcpTool(
+            var mcpTool = ResponseTool.CreateMcpTool(
                 serverLabel: "voicecon-mcp",
                 serverUri: new Uri($"{foundryOptions.McpServerUri.TrimEnd('/')}/runtime/webhooks/mcp"),
-                headers: headers,
-                toolCallApprovalPolicy: new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)));
+                toolCallApprovalPolicy: new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval));
+
+            // Sensitive headers are not accepted inline; the MCP webhook credential must be
+            // supplied through a Foundry project connection referenced by its connection id.
+            if (!string.IsNullOrWhiteSpace(foundryOptions.McpConnectionId))
+            {
+                mcpTool.ProjectConnectionId = foundryOptions.McpConnectionId;
+            }
+
+            tools.Add(mcpTool);
         }
 
         _agent = new ConversationInsightAgent(
