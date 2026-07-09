@@ -8,7 +8,7 @@ namespace VoiceConsultant.FunctionApp.Models;
 public class InsightDocument
 {
     [JsonPropertyName("id")]
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public string Id { get; set; } = System.Guid.NewGuid().ToString();
 
     /// <summary>Partition key, matches the source conversation's callId.</summary>
     [JsonPropertyName("callId")]
@@ -17,15 +17,16 @@ public class InsightDocument
     [JsonPropertyName("conversationId")]
     public string ConversationId { get; set; } = string.Empty;
 
-    /// <summary>Whether the agent detected signs of financial hardship.</summary>
-    [JsonPropertyName("hardshipDetected")]
-    public bool HardshipDetected { get; set; }
+    /// <summary>Unique identifier for this insight.</summary>
+    [JsonPropertyName("guid")]
+    public string Guid { get; set; } = System.Guid.NewGuid().ToString();
 
-    [JsonPropertyName("issues")]
-    public List<string> Issues { get; set; } = new();
+    /// <summary>Whether the agent produced any actionable suggestions.</summary>
+    [JsonPropertyName("suggestionDetected")]
+    public bool SuggestionDetected { get; set; }
 
     [JsonPropertyName("suggestions")]
-    public List<string> Suggestions { get; set; } = new();
+    public List<SuggestionItem> Suggestions { get; set; } = new();
 
     [JsonPropertyName("summary")]
     public string Summary { get; set; } = string.Empty;
@@ -40,4 +41,16 @@ public class InsightDocument
     /// <summary>Unique file key used to name files in the Fabric lakehouse: {Timestamp}_{Id}.</summary>
     [JsonIgnore]
     public string FileKey => $"{Timestamp}_{Id}";
+}
+
+/// <summary>
+/// A group of suggestions for a single topic raised during the call.
+/// </summary>
+public class SuggestionItem
+{
+    [JsonPropertyName("topic")]
+    public string Topic { get; set; } = string.Empty;
+
+    [JsonPropertyName("suggestions")]
+    public List<string> Suggestions { get; set; } = new();
 }

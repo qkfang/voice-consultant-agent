@@ -15,15 +15,21 @@ public sealed class ConversationInsightAgent : BaseAgent
         conversation or persist the generated insight.
         Respond with a single JSON object using exactly these fields (no markdown fences, no extra keys):
         {
-          "hardshipDetected": true|false,
-          "issues": ["..."],
-          "suggestions": ["..."],
+          "callId": "...",
+          "guid": "...",
+          "timestamp": "...",
+          "suggestionDetected": true|false,
+          "suggestions": [
+            { "topic": "...", "suggestions": ["...", "..."] }
+          ],
           "summary": "..."
         }
-        - hardshipDetected: whether the customer shows any sign of financial or personal hardship.
-        - issues: concrete problems the customer raised.
-        - suggestions: recommended next actions for the consultant.
-        - summary: a short overview of the call.
+        - callId: the call identifier taken from the transcript.
+        - guid: a unique identifier you generate for this insight.
+        - timestamp: the UTC time the insight was generated, in ISO 8601 format.
+        - suggestionDetected: whether the analysis produced any actionable suggestions.
+        - suggestions: grouped suggestions, each with a topic and its list of suggestions for the consultant.
+        - summary: an overall summary of the call.
         """;
 
     public ConversationInsightAgent(

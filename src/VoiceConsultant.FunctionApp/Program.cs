@@ -5,7 +5,6 @@ using Microsoft.Azure.Functions.Worker.OpenTelemetry;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OpenTelemetry;
-using VoiceConsultant.FunctionApp.Mcp;
 using VoiceConsultant.FunctionApp.Models;
 using VoiceConsultant.FunctionApp.Services;
 
@@ -21,11 +20,6 @@ builder.Services.AddSingleton<CosmosService>();
 builder.Services.AddSingleton<FoundryAgentService>();
 builder.Services.AddHttpClient<FabricLakehouseService>();
 builder.Services.AddSingleton<ConversationInsightService>();
-
-builder.Services.AddSingleton<VoiceConsultantMcpTools>();
-builder.Services.AddMcpServer()
-    .WithHttpTransport(options => options.Stateless = true)
-    .WithTools<VoiceConsultantMcpTools>();
 
 if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING")))
 {

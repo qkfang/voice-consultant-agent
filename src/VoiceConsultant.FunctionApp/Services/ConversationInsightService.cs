@@ -36,7 +36,7 @@ public class ConversationInsightService
         await _fabricLakehouseService.SaveInsightAsync(fileKey, analysis.Insight, cancellationToken);
         await _fabricLakehouseService.SaveConversationAsync(fileKey, conversation, cancellationToken);
 
-        _logger.LogInformation("Stored insight for call {CallId}, hardshipDetected={HardshipDetected}", conversation.CallId, analysis.Insight.HardshipDetected);
+        _logger.LogInformation("Stored insight for call {CallId}, suggestionDetected={SuggestionDetected}", conversation.CallId, analysis.Insight.SuggestionDetected);
         return analysis.Insight;
     }
 }

@@ -52,6 +52,16 @@ public class CosmosReaderService
         await ConversationsContainer.CreateItemAsync(conversation, new PartitionKey(conversation.CallId), cancellationToken: cancellationToken);
     }
 
+    /// <summary>
+    /// Re-writes an existing conversation document so the Function App change feed trigger
+    /// picks it up again and regenerates the agent insight.
+    /// </summary>
+    public async Task RetriggerConversationAsync(string id, string callId, CancellationToken cancellationToken = default)
+    {
+        var response = await ConversationsContainer.ReadItemAsync<ConversationDocument>(id, new PartitionKey(callId), cancellationToken: cancellationToken);
+        await ConversationsContainer.UpsertItemAsync(response.Resource, new PartitionKey(callId), cancellationToken: cancellationToken);
+    }
+
     public async Task<List<CallSummary>> GetRecentCallsAsync(int maxItems = 50, CancellationToken cancellationToken = default)
     {
         var conversations = new List<ConversationDocument>();

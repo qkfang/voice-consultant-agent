@@ -1,0 +1,14 @@
+{
+    "id": "b13ea4b6-7d40-4da3-895f-1d0b4d1e6199",
+    "callId": "call-agent-check-06",
+    "consultantId": "consultant-01",
+    "customerId": "customer-01",
+    "transcript": "Customer said they lost their job last month and are struggling to pay the mortgage. Consultant offered a hardship plan and waived late fees.",
+    "source": "api",
+    "createdAt": "2026-07-06T04:10:24.4508221+00:00",
+    "_rid": "2twUAJtauZwGAAAAAAAAAA==",
+    "_self": "dbs/2twUAA==/colls/2twUAJtauZw=/docs/2twUAJtauZwGAAAAAAAAAA==/",
+    "_etag": "\"01001153-0000-1a00-0000-6a4b2abd0000\"",
+    "_attachments": "attachments/",
+    "_ts": 1783311037
+}

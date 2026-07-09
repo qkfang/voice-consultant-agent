@@ -44,7 +44,7 @@ public class FoundryAgentService
         {
             tools.Add(ResponseTool.CreateMcpTool(
                 serverLabel: "voicecon-mcp",
-                serverUri: new Uri($"{foundryOptions.McpServerUri.TrimEnd('/')}/mcp"),
+                serverUri: new Uri($"{foundryOptions.McpServerUri.TrimEnd('/')}/runtime/webhooks/mcp"),
                 toolCallApprovalPolicy: new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)));
         }
 

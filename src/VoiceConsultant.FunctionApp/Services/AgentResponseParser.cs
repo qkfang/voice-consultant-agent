@@ -25,19 +25,14 @@ public static class AgentResponseParser
                 using var document = JsonDocument.Parse(json);
                 var root = document.RootElement;
 
-                if (root.TryGetProperty("hardshipDetected", out var hardshipElement))
+                if (root.TryGetProperty("suggestionDetected", out var suggestionDetectedElement))
                 {
-                    insight.HardshipDetected = hardshipElement.ValueKind == JsonValueKind.True;
-                }
-
-                if (root.TryGetProperty("issues", out var issuesElement) && issuesElement.ValueKind == JsonValueKind.Array)
-                {
-                    insight.Issues = issuesElement.EnumerateArray().Select(e => e.GetString() ?? string.Empty).ToList();
+                    insight.SuggestionDetected = suggestionDetectedElement.ValueKind == JsonValueKind.True;
                 }
 
                 if (root.TryGetProperty("suggestions", out var suggestionsElement) && suggestionsElement.ValueKind == JsonValueKind.Array)
                 {
-                    insight.Suggestions = suggestionsElement.EnumerateArray().Select(e => e.GetString() ?? string.Empty).ToList();
+                    insight.Suggestions = suggestionsElement.EnumerateArray().Select(ParseSuggestion).ToList();
                 }
 
                 if (root.TryGetProperty("summary", out var summaryElement))
@@ -55,6 +50,23 @@ public static class AgentResponseParser
 
         insight.Summary = responseText;
         return insight;
+    }
+
+    private static SuggestionItem ParseSuggestion(JsonElement element)
+    {
+        var item = new SuggestionItem();
+
+        if (element.TryGetProperty("topic", out var topicElement))
+        {
+            item.Topic = topicElement.GetString() ?? string.Empty;
+        }
+
+        if (element.TryGetProperty("suggestions", out var suggestionsElement) && suggestionsElement.ValueKind == JsonValueKind.Array)
+        {
+            item.Suggestions = suggestionsElement.EnumerateArray().Select(e => e.GetString() ?? string.Empty).ToList();
+        }
+
+        return item;
     }
 
     private static string? ExtractJson(string text)

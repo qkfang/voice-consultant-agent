@@ -11,7 +11,11 @@
 {
     <div class="alert alert-danger">@Model.ErrorMessage</div>
 }
-else if (Model.Calls.Count == 0)
+@if (Model.StatusMessage is not null)
+{
+    <div class="alert alert-success">@Model.StatusMessage</div>
+}
+@if (Model.Calls.Count == 0)
 {
     <p>No calls have been recorded yet.</p>
 }
@@ -23,10 +27,10 @@ else
                 <th>Call Id</th>
                 <th>Consultant</th>
                 <th>Received</th>
-                <th>Hardship Detected</th>
-                <th>Issues</th>
+                <th>Suggestion Detected</th>
                 <th>Suggestions</th>
                 <th>Summary</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -41,7 +45,7 @@ else
                         {
                             <span>Pending</span>
                         }
-                        else if (call.Insight.HardshipDetected)
+                        else if (call.Insight.SuggestionDetected)
                         {
                             <span class="badge bg-danger">Yes</span>
                         }
@@ -50,9 +54,20 @@ else
                             <span class="badge bg-success">No</span>
                         }
                     </td>
-                    <td>@string.Join(", ", call.Insight?.Issues ?? new())</td>
-                    <td>@string.Join(", ", call.Insight?.Suggestions ?? new())</td>
+                    <td>
+                        @foreach (var suggestion in call.Insight?.Suggestions ?? new())
+                        {
+                            <div><strong>@suggestion.Topic:</strong> @string.Join(", ", suggestion.Suggestions)</div>
+                        }
+                    </td>
                     <td>@call.Insight?.Summary</td>
+                    <td>
+                        <form method="post" asp-page-handler="Retrigger">
+                            <input type="hidden" name="id" value="@call.Conversation.Id" />
+                            <input type="hidden" name="callId" value="@call.Conversation.CallId" />
+                            <button type="submit" class="btn btn-sm btn-outline-primary">Retrigger</button>
+                        </form>
+                    </td>
                 </tr>
             }
         </tbody>
