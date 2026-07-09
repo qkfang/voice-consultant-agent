@@ -12,7 +12,7 @@ namespace VoiceConsultant.FunctionApp.Services;
 public class FabricLakehouseService
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
-    private static readonly string[] TokenScopes = ["https://onelake.azure.net/.default"];
+    private static readonly string[] TokenScopes = ["https://storage.azure.com/.default"];
 
     private readonly FabricOptions _options;
     private readonly HttpClient _httpClient;

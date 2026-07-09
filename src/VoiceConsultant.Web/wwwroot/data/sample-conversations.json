@@ -49,5 +49,141 @@
       "Consultant: No new equipment needed, I can switch you over remotely right now.",
       "Customer: Perfect, let's do it. Thanks for making that easy."
     ]
+  },
+  {
+    "name": "Stressed - overwhelmed by claim process",
+    "consultantId": "consultant-04",
+    "customerId": "customer-04",
+    "turns": [
+      "Consultant: Thanks for calling, how can I help you today?",
+      "Customer: Honestly I'm so stressed, this claim has been dragging on for weeks and I don't know what's happening.",
+      "Consultant: I'm really sorry it's felt that way. Let's go through it together and get you some clear answers.",
+      "Customer: Every time I call I get told something different and it's exhausting.",
+      "Consultant: I understand, that's frustrating. I can see your claim is now with assessment and I'll stay as your point of contact.",
+      "Customer: That would help a lot, I just need one person who knows my case.",
+      "Consultant: Absolutely. I'll add my direct notes so you won't have to repeat yourself again.",
+      "Customer: Thank you, I've been losing sleep over this.",
+      "Consultant: Let's set a follow-up for two days from now so you always know the next step.",
+      "Customer: That takes a real weight off, thank you for listening."
+    ]
+  },
+  {
+    "name": "Health issue - recovering from illness",
+    "consultantId": "consultant-05",
+    "customerId": "customer-05",
+    "turns": [
+      "Consultant: Good morning, what can I help you with today?",
+      "Customer: I've been unwell and in and out of hospital, so I've fallen behind on my paperwork.",
+      "Consultant: I'm sorry to hear you've been sick. Please don't worry, we can work around your recovery.",
+      "Customer: I just can't manage long forms right now, I get tired very quickly.",
+      "Consultant: That's completely understandable. I can take the key details over the phone for you.",
+      "Customer: That would be much easier, thank you.",
+      "Consultant: I'll also flag your account so any deadlines are extended while you recover.",
+      "Customer: I was worried I'd miss something important.",
+      "Consultant: You won't, I've noted everything and I'll handle the submission on my end.",
+      "Customer: That's a relief, thank you for being so patient."
+    ]
+  },
+  {
+    "name": "Personal difficulty - going through a hard time",
+    "consultantId": "consultant-06",
+    "customerId": "customer-06",
+    "turns": [
+      "Consultant: Hi there, thanks for calling. How can I support you today?",
+      "Customer: I'm going through a really difficult time personally and I've let a few things slip.",
+      "Consultant: I appreciate you telling me, and I'm sorry things are tough right now.",
+      "Customer: I just need a bit of breathing room to sort myself out.",
+      "Consultant: We can do that. I can place a short hold on your account so nothing escalates.",
+      "Customer: That would genuinely help me focus on what I need to.",
+      "Consultant: I'll set the hold and there's no action needed from you during that time.",
+      "Customer: Thank you, I wasn't sure how this call would go.",
+      "Consultant: You did the right thing reaching out. We'll check back in when you're ready.",
+      "Customer: I really appreciate the understanding, thank you."
+    ]
+  },
+  {
+    "name": "Life issue - recent relocation",
+    "consultantId": "consultant-07",
+    "customerId": "customer-07",
+    "turns": [
+      "Consultant: Hello, how can I help you today?",
+      "Customer: I've just moved and everything is a bit chaotic, I think my details are out of date.",
+      "Consultant: Congratulations on the move, and no problem, let's get everything updated.",
+      "Customer: I'm worried some letters went to my old address.",
+      "Consultant: I can update your address now and resend anything that was returned.",
+      "Customer: That's good, I don't want to miss anything important.",
+      "Consultant: I'll switch you to email notifications too, so nothing gets lost in the post.",
+      "Customer: Yes please, that's much safer while I'm settling in.",
+      "Consultant: All updated. You'll get a confirmation shortly to your new details.",
+      "Customer: Wonderful, thanks for making that so simple."
+    ]
+  },
+  {
+    "name": "Family issue - caring for a relative",
+    "consultantId": "consultant-08",
+    "customerId": "customer-08",
+    "turns": [
+      "Consultant: Thanks for calling, what can I do for you today?",
+      "Customer: I'm caring for a family member full time and I've had no time to deal with this.",
+      "Consultant: That's a lot to manage. I'm glad you called and we'll keep this quick and simple.",
+      "Customer: I just can't take long phone calls at the moment.",
+      "Consultant: Understood. Tell me the main thing you need sorted and I'll handle the rest.",
+      "Customer: I need to update who can speak on my account so someone can help me.",
+      "Consultant: I can add an authorised contact for you right now, I'll just confirm a few details.",
+      "Customer: That would take so much pressure off me.",
+      "Consultant: Done. Your nominated contact can now assist whenever you need.",
+      "Customer: Thank you, that makes a real difference for my family."
+    ]
+  },
+  {
+    "name": "Financial issue - reduced income",
+    "consultantId": "consultant-09",
+    "customerId": "customer-09",
+    "turns": [
+      "Consultant: Good afternoon, how can I help you today?",
+      "Customer: My hours were cut at work and my income has dropped a lot this month.",
+      "Consultant: I'm sorry to hear that. Let's look at what we can adjust to make things manageable.",
+      "Customer: I want to stay on top of things, I just need the amount to be lower for now.",
+      "Consultant: We can set up a reduced payment arrangement based on what you can afford.",
+      "Customer: What would that look like each month?",
+      "Consultant: We'll agree an amount that fits your budget and review it once your hours pick up.",
+      "Customer: That sounds fair, I don't want to fall behind.",
+      "Consultant: You won't, and I'll note the change of circumstances so there are no penalties.",
+      "Customer: Thank you, that's exactly the help I needed."
+    ]
+  },
+  {
+    "name": "Bereavement - loss in the family",
+    "consultantId": "consultant-10",
+    "customerId": "customer-10",
+    "turns": [
+      "Consultant: Hello, thank you for calling. How can I help?",
+      "Customer: I recently lost a family member and I'm trying to sort out their account.",
+      "Consultant: I'm very sorry for your loss. I'll make this as gentle and simple as I can.",
+      "Customer: I'm not really sure where to start with any of it.",
+      "Consultant: That's okay. I'll guide you step by step and only ask for what's essential.",
+      "Customer: I have some documents but I'm not sure which ones you need.",
+      "Consultant: I'll tell you exactly what to send and you can do it whenever you're ready.",
+      "Customer: Thank you, everyone else has made this feel so complicated.",
+      "Consultant: I'll add a note so you always reach someone familiar with your situation.",
+      "Customer: I really appreciate your kindness, thank you."
+    ]
+  },
+  {
+    "name": "Injury claim - recovering from an accident",
+    "consultantId": "consultant-11",
+    "customerId": "customer-11",
+    "turns": [
+      "Consultant: Thanks for calling, how can I help you today?",
+      "Customer: I had an accident and I'm off my feet for a while, so I need to make a claim.",
+      "Consultant: I'm sorry to hear you were hurt. Let's get your claim started as smoothly as possible.",
+      "Customer: I'm in a bit of pain so I'd like to keep this short if we can.",
+      "Consultant: Of course. I'll only take the essentials now and we can finish the rest later.",
+      "Customer: I have a medical certificate from the hospital.",
+      "Consultant: That's perfect, that covers what we need to open the claim today.",
+      "Customer: How soon will I hear back?",
+      "Consultant: I'll fast-track it given your injury and you'll hear from us within two business days.",
+      "Customer: Thank you, that's one less thing to worry about while I recover."
+    ]
   }
 ]
