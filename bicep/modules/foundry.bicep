@@ -7,6 +7,12 @@ param foundryServicesName string
 @description('AI Foundry project name')
 param foundryProjectName string
 
+@description('Name of the custom keys connection pointing at the MCP webhook')
+param mcpConnectionName string = ''
+
+@description('Target URL of the function app MCP webhook')
+param mcpConnectionTarget string = ''
+
 
 // Azure AI Services account with project management enabled
 resource foundrySvc 'Microsoft.CognitiveServices/accounts@2025-10-01-preview' = {
@@ -63,7 +69,25 @@ resource gpt54Deployment 'Microsoft.CognitiveServices/accounts/deployments@2024-
   }
 }
 
+// Custom keys connection to the MCP webhook. The x-functions-key value is added manually in the portal.
+resource mcpConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = if (!empty(mcpConnectionName)) {
+  parent: aiProject
+  name: mcpConnectionName
+  properties: {
+    authType: 'CustomKeys'
+    category: 'CustomKeys'
+    target: mcpConnectionTarget
+    isSharedToAll: false
+    credentials: {
+      keys: {
+        'x-functions-key': 'placeholder'
+      }
+    }
+  }
+}
+
 output aiProjectEndpoint string = aiProject.properties.endpoints['AI Foundry API']
 output aiServicesEndpoint string = foundrySvc.properties.endpoint
+output mcpConnectionName string = mcpConnectionName
 output modelDeploymentName string = gpt54Deployment.name
 output aiHubPrincipalId string = foundrySvc.identity.principalId

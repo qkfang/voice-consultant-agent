@@ -80,6 +80,8 @@ module foundry './modules/foundry.bicep' = {
     location: location
     foundryServicesName: aiServicesName
     foundryProjectName: aiProjectName
+    mcpConnectionName: 'voicecon-mcp'
+    mcpConnectionTarget: 'https://${functionAppName}.azurewebsites.net/runtime/webhooks/mcp'
   }
 }
 
@@ -124,6 +126,7 @@ module functionApp './modules/functionapp.bicep' = {
     cosmosLeasesContainerName: cosmos.outputs.leasesContainerName
     foundryProjectEndpoint: foundry.outputs.aiProjectEndpoint
     foundryAgentId: foundryAgentId
+    foundryMcpConnectionId: foundry.outputs.mcpConnectionName
     foundryModelDeploymentName: foundry.outputs.modelDeploymentName
     fabricWorkspaceId: fabricWorkspaceId
     fabricLakehouseId: fabricLakehouseId
