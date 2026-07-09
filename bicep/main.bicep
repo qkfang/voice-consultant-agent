@@ -139,7 +139,6 @@ resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2024-08-15' existi
 }
 
 var cosmosDataContributorRoleId = '00000000-0000-0000-0000-000000000002'
-var cosmosDataReaderRoleId = '00000000-0000-0000-0000-000000000001'
 
 // Function App needs read/write access to conversations, insights and leases containers
 resource functionAppCosmosRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2024-08-15' = {
@@ -152,12 +151,12 @@ resource functionAppCosmosRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/
   }
 }
 
-// Web App only needs to read conversations/insights to display them
+// Web App reads conversations/insights and writes new conversations from the UI
 resource webAppCosmosRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2024-08-15' = {
   parent: cosmosAccount
-  name: guid(cosmosAccount.id, webAppName, cosmosDataReaderRoleId)
+  name: guid(cosmosAccount.id, webAppName, cosmosDataContributorRoleId)
   properties: {
-    roleDefinitionId: '${cosmosAccount.id}/sqlRoleDefinitions/${cosmosDataReaderRoleId}'
+    roleDefinitionId: '${cosmosAccount.id}/sqlRoleDefinitions/${cosmosDataContributorRoleId}'
     principalId: appService.outputs.principalId
     scope: cosmosAccount.id
   }
