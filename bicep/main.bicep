@@ -189,12 +189,20 @@ resource foundryAccount 'Microsoft.CognitiveServices/accounts@2025-10-01-preview
   name: aiServicesName
 }
 
-// Function App needs to call the Azure AI Foundry agent
+resource foundryProject 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' existing = {
+  parent: foundryAccount
+  name: aiProjectName
+}
+
+// Foundry User role grants the data-plane agents/* actions (create/read/run) the function app needs
+var foundryUserRoleId = '53ca6127-db72-4b80-b1b0-d745d6d5456d'
+
+// Function App needs to create and call agents in the Azure AI Foundry project
 resource functionAppFoundryRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  scope: foundryAccount
-  name: guid(foundryAccount.id, functionAppName, '64702f94-c441-49e6-a78b-ef80e0188fee')
+  scope: foundryProject
+  name: guid(foundryProject.id, functionAppName, foundryUserRoleId)
   properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '64702f94-c441-49e6-a78b-ef80e0188fee')
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', foundryUserRoleId)
     principalId: functionApp.outputs.principalId
     principalType: 'ServicePrincipal'
   }
