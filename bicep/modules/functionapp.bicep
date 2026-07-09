@@ -37,6 +37,10 @@ param foundryAgentId string
 @description('Azure AI Foundry model deployment name used by the conversation insight agent')
 param foundryModelDeploymentName string
 
+@description('System key used by the Foundry agent to authenticate calls to the MCP webhook endpoint')
+@secure()
+param foundryMcpServerKey string = ''
+
 @description('Fabric workspace id for writing final agent output to the lakehouse')
 param fabricWorkspaceId string = ''
 
@@ -147,6 +151,10 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
         {
           name: 'Foundry__McpServerUri'
           value: 'https://${functionAppName}.azurewebsites.net'
+        }
+        {
+          name: 'Foundry__McpServerKey'
+          value: foundryMcpServerKey
         }
         {
           name: 'Fabric__TenantId'

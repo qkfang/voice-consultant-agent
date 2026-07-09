@@ -4,6 +4,12 @@ az group create --name "rg-voicecon" --location 'australiaeast'
 
 az deployment group create --name "deploy-voicecon" --resource-group "rg-voicecon" --template-file './main.bicep' --parameters './main.bicepparam'
 
+# Wire the MCP webhook system key so the Foundry agent can authenticate to the MCP endpoint (run after the function app code is deployed)
+$mcpKey = az functionapp keys list --resource-group "rg-voicecon" --name "voicecon-func" --query "systemKeys.mcp_extension" -o tsv
+if ($mcpKey) {
+    az functionapp config appsettings set --resource-group "rg-voicecon" --name "voicecon-func" --settings "Foundry__McpServerKey=$mcpKey" -o none
+}
+
 # sp-demo-01
 $spObjectId = 'a6efe236-83c5-472b-a068-65006e369ad7'  
 $subscriptionId = az account show --query 'id' -o tsv

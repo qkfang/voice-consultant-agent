@@ -43,9 +43,16 @@ public class FoundryAgentService
         var tools = new List<ResponseTool>();
         if (!string.IsNullOrWhiteSpace(foundryOptions.McpServerUri))
         {
+            IDictionary<string, string>? headers = null;
+            if (!string.IsNullOrWhiteSpace(foundryOptions.McpServerKey))
+            {
+                headers = new Dictionary<string, string> { ["x-functions-key"] = foundryOptions.McpServerKey };
+            }
+
             tools.Add(ResponseTool.CreateMcpTool(
                 serverLabel: "voicecon-mcp",
                 serverUri: new Uri($"{foundryOptions.McpServerUri.TrimEnd('/')}/runtime/webhooks/mcp"),
+                headers: headers,
                 toolCallApprovalPolicy: new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)));
         }
 
