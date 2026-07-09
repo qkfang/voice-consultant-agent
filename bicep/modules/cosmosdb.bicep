@@ -17,6 +17,9 @@ resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2024-08-15' = {
   name: accountName
   location: location
   kind: 'GlobalDocumentDB'
+  tags: {
+    SecurityControl: 'Ignore'
+  }
   identity: {
     type: 'SystemAssigned'
   }
@@ -34,6 +37,10 @@ resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2024-08-15' = {
     ]
     capabilities: []
     disableLocalAuth: false
+    publicNetworkAccess: 'Enabled'
+    networkAclBypass: 'AzureServices'
+    isVirtualNetworkFilterEnabled: false
+    ipRules: []
   }
 }
 
