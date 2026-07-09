@@ -109,6 +109,10 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
           value: cosmosAccountEndpoint
         }
         {
+          name: 'Cosmos__TenantId'
+          value: tenant().tenantId
+        }
+        {
           name: 'Cosmos__DatabaseName'
           value: cosmosDatabaseName
         }
@@ -129,6 +133,10 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
           value: foundryProjectEndpoint
         }
         {
+          name: 'Foundry__TenantId'
+          value: tenant().tenantId
+        }
+        {
           name: 'Foundry__AgentId'
           value: foundryAgentId
         }
@@ -141,6 +149,10 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
           value: 'https://${functionAppName}.azurewebsites.net'
         }
         {
+          name: 'Fabric__TenantId'
+          value: tenant().tenantId
+        }
+        {
           name: 'Fabric__OneLakeUri'
           value: 'https://onelake.dfs.fabric.microsoft.com'
         }
@@ -151,6 +163,10 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
         {
           name: 'Fabric__LakehouseId'
           value: fabricLakehouseId
+        }
+        {
+          name: 'Fabric__LandTranscription'
+          value: 'true'
         }
       ]
     }

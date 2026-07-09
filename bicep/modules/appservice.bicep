@@ -67,6 +67,10 @@ resource webApp 'Microsoft.Web/sites@2023-12-01' = {
           value: cosmosAccountEndpoint
         }
         {
+          name: 'Cosmos__TenantId'
+          value: tenant().tenantId
+        }
+        {
           name: 'Cosmos__DatabaseName'
           value: cosmosDatabaseName
         }
