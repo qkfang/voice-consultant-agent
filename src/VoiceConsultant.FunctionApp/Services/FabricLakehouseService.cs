@@ -75,7 +75,10 @@ public class FabricLakehouseService
     {
         var bytes = Encoding.UTF8.GetBytes(content);
         var fileUri = BuildFileUri(folder, fileName);
-        var accessToken = await _credential.GetTokenAsync(new TokenRequestContext(TokenScopes), cancellationToken);
+        var tokenContext = string.IsNullOrWhiteSpace(_options.TenantId)
+            ? new TokenRequestContext(TokenScopes)
+            : new TokenRequestContext(TokenScopes, tenantId: _options.TenantId);
+        var accessToken = await _credential.GetTokenAsync(tokenContext, cancellationToken);
 
         await SendAsync(HttpMethod.Put, $"{fileUri}?resource=file&overwrite=true", accessToken.Token, cancellationToken: cancellationToken);
         await SendAsync(HttpMethod.Patch, $"{fileUri}?action=append&position=0", accessToken.Token, new ByteArrayContent(bytes), cancellationToken);

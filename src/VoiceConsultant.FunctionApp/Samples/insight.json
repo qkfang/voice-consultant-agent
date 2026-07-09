@@ -1,0 +1,31 @@
+{
+    "id": "80045d67-713f-4d67-abbd-eb4022b4e77e",
+    "callId": "call-c0691341",
+    "conversationId": "488cdec0-dbe1-460b-a01d-edf31b7e4cc4",
+    "guid": "03a2b65d-04ff-4821-89fe-2a1d136f9fe9",
+    "suggestionDetected": true,
+    "suggestions": [
+        {
+            "topic": "Refund communication",
+            "suggestions": [
+                "Confirm the exact refund amounts for both the duplicate charge and the adjustment fee so the customer knows what to expect.",
+                "Advise the customer on what to do if the refund is not visible after three to five business days."
+            ]
+        },
+        {
+            "topic": "Account assurance",
+            "suggestions": [
+                "Explain briefly how the duplicate transaction occurred if that information is available.",
+                "Confirm that no further unauthorised charges are pending on the account."
+            ]
+        }
+    ],
+    "summary": "The customer called about being charged twice in the same month, including a larger second charge. The consultant reviewed the account, identified a duplicate transaction and an incorrect adjustment fee, and agreed to reverse both charges. The consultant advised that the refund should appear within three to five business days, and the customer ended the call satisfied with the resolution.",
+    "generatedAt": "2026-07-09T01:03:54.8402365+00:00",
+    "timestamp": "20260709010354840",
+    "_rid": "2twUANY5c9wFAAAAAAAAAA==",
+    "_self": "dbs/2twUAA==/colls/2twUANY5c9w=/docs/2twUANY5c9wFAAAAAAAAAA==/",
+    "_etag": "\"0200c134-0000-1a00-0000-6a4ef38a0000\"",
+    "_attachments": "attachments/",
+    "_ts": 1783559050
+}
