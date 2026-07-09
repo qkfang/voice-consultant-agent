@@ -4,7 +4,7 @@ param location string
 @description('Function App name')
 param functionAppName string
 
-@description('App Service plan name (Consumption/Elastic Premium Linux plan)')
+@description('App Service plan name (Windows plan)')
 param appServicePlanName string
 
 @description('Storage account name required by the Functions runtime')
@@ -71,14 +71,14 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = {
   }
   kind: 'functionapp'
   properties: {
-    reserved: true
+    reserved: false
   }
 }
 
 resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
   name: functionAppName
   location: location
-  kind: 'functionapp,linux'
+  kind: 'functionapp'
   identity: {
     type: 'SystemAssigned'
   }
@@ -86,7 +86,7 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
     serverFarmId: appServicePlan.id
     httpsOnly: true
     siteConfig: {
-      linuxFxVersion: 'DOTNET-ISOLATED|8.0'
+      netFrameworkVersion: 'v8.0'
       appSettings: [
         {
           name: 'AzureWebJobsStorage__accountName'
