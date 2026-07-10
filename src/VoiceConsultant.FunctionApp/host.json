@@ -6,7 +6,7 @@
             "serverName": "voicecon-mcp",
             "serverVersion": "1.0.0",
             "system": {
-                "webhookAuthorizationLevel": "System"
+                "webhookAuthorizationLevel": "Anonymous"
             }
         }
     }
